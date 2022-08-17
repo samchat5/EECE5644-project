@@ -15,6 +15,10 @@ ipympl = "*"
 ipywidgets = "*"
 mypy = "*"
 openpyxl = "*"
+geopandas = "*"
+folium = "*"
+mapclassify = "*"
+branca = "*"
 
 [dev-packages]
 pylint = "*"
