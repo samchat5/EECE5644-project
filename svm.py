@@ -115,4 +115,4 @@ for c in c_values:
     for epsilon in epsilon_values:
         regr = make_pipeline(StandardScaler(), SVR(C=c, epsilon=epsilon))
         regr.fit(X_train, y_train)
-        print(regr.score(X_test, y_test, sample_weight=None), c, epsilon)   
+        print(regr.score(X_test, y_test, sample_weight=None), c, epsilon)  
