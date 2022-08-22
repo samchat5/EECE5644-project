@@ -1,0 +1,11 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "database": "\\\\wsl.localhost\\Ubuntu-22.04\\home\\sam\\school\\EECE5644-project\\results.db",
+      "name": "county"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
+}
