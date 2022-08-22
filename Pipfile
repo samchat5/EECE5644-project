@@ -19,6 +19,7 @@ geopandas = "*"
 folium = "*"
 mapclassify = "*"
 branca = "*"
+seaborn = "*"
 
 [dev-packages]
 pylint = "*"
