@@ -1,9 +1,11 @@
+from difflib import diff_bytes
 import pandas as pd
 import math
 from sklearn.svm import SVR
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+import numpy as np
 
 #################################################### Importing and clening the data ###############################################
 
@@ -100,15 +102,15 @@ df = pd.concat([df, state_county_df], axis=1)
 # print(len(state_county_df.columns))
 
 df = turn_values_to_numeric(df)
-col_with_large_numbers = ["pop", "income"]
+col_with_large_numbers = ["income"]
 df = turn_strings_into_int(df, col_with_large_numbers)
-columns_to_normalize = ["pop", "age", "income"]
+columns_to_normalize = ["age", "income"]
 df = normalize_columns(df, columns_to_normalize)
 
 
 ######################################## Train the algorithm ################################################
 
-input_data = df.drop(columns=["margin", "state", "county"])
+input_data = df.drop(columns=["margin", "state", "county", "pop"])
 outcome_data = df["margin"]
 X_train, X_test, y_train, y_test = train_test_split(
     input_data, outcome_data, test_size=0.2, random_state=0
@@ -123,3 +125,23 @@ for c in c_values:
         regr = make_pipeline(StandardScaler(), SVR(C=c, epsilon=epsilon))
         regr.fit(X_train, y_train)
         print(regr.score(X_test, y_test, sample_weight=None), c, epsilon)
+
+# Best model is C = 1 and epsilon = 0.1
+
+opt_regr = make_pipeline(StandardScaler(), SVR(C=1, epsilon=0.1))
+opt_regr.fit(X_train, y_train)
+pred_df = df.assign(
+    pred=opt_regr.predict(input_data),
+    true_cls=np.where(outcome_data > 0, 1, 0),
+    pred_cls=lambda x: np.where(x["pred"] > 0, 1, 0),
+).assign(diff=lambda x: (x["margin"] - x["pred"]).abs())
+error_rate = 1 - pred_df["true_cls"].eq(pred_df["pred_cls"]).mean()
+
+print()
+print("Error rate: ", error_rate)
+print("R^2: ", opt_regr.score(input_data, outcome_data, sample_weight=None))
+print(
+    pred_df[
+        ["margin", "pred", "true_cls", "pred_cls", "diff", "state", "county"]
+    ].sort_values(by="diff", ascending=False)
+)
