@@ -109,8 +109,8 @@ X_train, X_test, y_train, y_test = train_test_split(input_data, outcome_data, te
 
 
 # We pick the values of c and epsilon for which we get the best pridction. 
-epsilon_values = [0.1,0.2,0.3,0.4,0.5,0.6]
-c_values = [1,2,3,4,5,6]
+epsilon_values = [0.05, 0.075, 0.1, 0.125, 0.15]
+c_values = [1,2,3,4,5]
 for c in c_values:
     for epsilon in epsilon_values:
         regr = make_pipeline(StandardScaler(), SVR(C=c, epsilon=epsilon))
